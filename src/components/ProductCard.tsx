@@ -1,12 +1,18 @@
-import type { Product } from "../types/product"
+import type { Product } from "../types/product";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
-  product: Product
+  product: Product;
 }
 
 const ProductCard = ({ product }: Props) => {
+  const navigate = useNavigate();
   return (
-    <div className="card">
+    <div
+      className="card"
+      onClick={() => navigate(`/product/${product.id}`)}
+      style={{ cursor: "pointer" }}
+    >
       <img
         src={product.image_url}
         alt={product.title}
@@ -19,14 +25,11 @@ const ProductCard = ({ product }: Props) => {
 
       <button
         className="buy-button"
-        onClick={() =>
-          window.open(product.affiliate_link, "_blank")
-        }
       >
         Buy Now
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;
