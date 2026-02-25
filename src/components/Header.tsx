@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react"
 import { Link, NavLink } from "react-router-dom"
-import { getCategories } from "../services/productService"
 
 const Header = () => {
   const [categories, setCategories] = useState<string[]>([])
@@ -20,24 +18,14 @@ const Header = () => {
   return (
     <header className="header">
       <Link to="/" className="logo-wrap">
-        <span className="logo">PeakCart</span>
-        <span className="logo-tag">Performance Lifestyle Marketplace</span>
+        <span className="logo">FitShapers</span>
+        <span className="logo-tag">Performance Lifestyle Picks</span>
       </Link>
 
       <nav className="nav">
-        <div className="nav-dropdown">
-          <button className="dropdown-trigger" type="button">
-            Categories
-          </button>
-          <div className="dropdown-menu">
-            {categories.map((category) => (
-              <NavLink key={category} to={`/category/${category}`}>
-                {category}
-              </NavLink>
-            ))}
-          </div>
-        </div>
-        <NavLink to="/admin">Admin</NavLink>
+        <NavLink to="/category/Electronics">Smart Tech</NavLink>
+        <NavLink to="/category/Accessories">Accessories</NavLink>
+        <NavLink to="/category/Gadgets">Productivity</NavLink>
         <NavLink to="/admin/analytics">Analytics</NavLink>
       </nav>
     </header>
