@@ -178,14 +178,35 @@ a {
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
 }
 
-.details-grid {
+.rating {
+  margin: 0 0 14px;
+}
+
+.trust-block {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 26px;
   align-items: center;
 }
 
-.details-image {
+.trust-block p {
+  margin: 0;
+  color: #334155;
+  font-size: 14px;
+}
+
+.related-section {
+  margin-top: 28px;
+}
+
+.related-card {
+  border: 1px solid #e7ecf3;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fbfdff;
+}
+
+.related-image {
   width: 100%;
   border-radius: 14px;
   max-height: 420px;

@@ -1,6 +1,20 @@
 import { Link, NavLink } from "react-router-dom"
 
 const Header = () => {
+  const [categories, setCategories] = useState<string[]>([])
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const allCategories = await getCategories()
+      setCategories(allCategories)
+    }
+
+    loadCategories()
+
+    window.addEventListener("categories-updated", loadCategories)
+    return () => window.removeEventListener("categories-updated", loadCategories)
+  }, [])
+
   return (
     <header className="header">
       <Link to="/" className="logo-wrap">

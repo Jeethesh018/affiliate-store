@@ -22,6 +22,34 @@ export const getAllProducts = async (): Promise<Product[]> => {
   return data || []
 }
 
+export const getCategories = async (): Promise<string[]> => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("category")
+
+  if (error) {
+    console.error("Error fetching categories:", error)
+    return []
+  }
+
+  return [...new Set((data || []).map((item) => item.category).filter(Boolean))].sort()
+}
+
+export const createProduct = async (payload: ProductPayload): Promise<Product | null> => {
+  const { data, error } = await supabase
+    .from("products")
+    .insert([payload])
+    .select("*")
+    .single()
+
+  if (error) {
+    console.error("Error adding product:", error)
+    return null
+  }
+
+  return data
+}
+
 export const getProductsByCategory = async (
   category: string
 ): Promise<Product[]> => {
