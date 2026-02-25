@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react"
 import { Link, NavLink } from "react-router-dom"
+import { getCategories } from "../services/productService"
 
 const Header = () => {
   const [categories, setCategories] = useState<string[]>([])
@@ -16,17 +18,36 @@ const Header = () => {
   }, [])
 
   return (
-    <header className="header">
-      <Link to="/" className="logo-wrap">
-        <span className="logo">FitShapers</span>
-        <span className="logo-tag">Performance Lifestyle Picks</span>
+    <header className="site-header">
+      <Link to="/" className="brand-wrap">
+        <span className="brand-logo">PeakCart</span>
+        <span className="brand-tag">Smart Performance Buying</span>
       </Link>
 
-      <nav className="nav">
-        <NavLink to="/category/Electronics">Smart Tech</NavLink>
-        <NavLink to="/category/Accessories">Accessories</NavLink>
-        <NavLink to="/category/Gadgets">Productivity</NavLink>
-        <NavLink to="/admin/analytics">Analytics</NavLink>
+      <nav className="site-nav">
+        <div className="category-dropdown">
+          <button className="category-trigger" type="button">
+            Categories ▾
+          </button>
+          <div className="category-menu">
+            {categories.length === 0 ? (
+              <span className="category-empty">No categories yet</span>
+            ) : (
+              categories.map((category) => (
+                <NavLink key={category} to={`/category/${category}`}>
+                  {category}
+                </NavLink>
+              ))
+            )}
+          </div>
+        </div>
+
+        <NavLink to="/admin" className="nav-pill">
+          Admin
+        </NavLink>
+        <NavLink to="/admin/analytics" className="nav-pill nav-pill-dark">
+          Analytics
+        </NavLink>
       </nav>
     </header>
   )

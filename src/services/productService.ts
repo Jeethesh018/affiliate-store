@@ -8,6 +8,15 @@ export interface ProductClickAnalytics {
   estimatedRevenue: number | null
 }
 
+interface ProductPayload {
+  title: string
+  price: number
+  image_url: string
+  category: string
+  affiliate_link: string
+  rating: number | null
+}
+
 export const getAllProducts = async (): Promise<Product[]> => {
   const { data, error } = await supabase
     .from("products")
