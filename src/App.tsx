@@ -1,18 +1,26 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Header from "./components/Header"
+import AdminAnalytics from "./pages/AdminAnalytics"
+import AdminDashboard from "./pages/AdminDashboard"
+import CategoryPage from "./pages/CategoryPage"
 import Home from "./pages/Home"
 import ProductDetails from "./pages/ProductDetails"
-import CategoryPage from "./pages/CategoryPage"
-import Header from "./components/Header"
 
 function App() {
   return (
     <BrowserRouter>
-    <Header/>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/category/:categoryName" element={<CategoryPage />} />
-      </Routes>
+      <div className="app-shell">
+        <Header />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/category/:categoryName" element={<CategoryPage />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          </Routes>
+        </main>
+      </div>
     </BrowserRouter>
   )
 }
