@@ -1,6 +1,12 @@
 import { supabase } from "../lib/supabase"
 import type { Product } from "../types/product"
 
+export interface ProductClickAnalytics {
+  productId: string
+  productTitle: string
+  totalClicks: number
+  estimatedRevenue: number | null
+}
 
 export const getAllProducts = async (): Promise<Product[]> => {
   const { data, error } = await supabase
@@ -33,6 +39,21 @@ export const getProductsByCategory = async (
   return data || []
 }
 
+export const getProductById = async (productId: string): Promise<Product | null> => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("id", productId)
+    .single()
+
+  if (error) {
+    console.error("Error fetching product details:", error)
+    return null
+  }
+
+  return data
+}
+
 export const trackProductClick = async (productId: string) => {
   const { error } = await supabase
     .from("product_clicks")
@@ -46,4 +67,24 @@ export const trackProductClick = async (productId: string) => {
   if (error) {
     console.error("Error tracking click:", error)
   }
+}
+
+export const getProductClickAnalytics = async (): Promise<ProductClickAnalytics[]> => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id, title, product_clicks(count)")
+
+  if (error) {
+    console.error("Error fetching product analytics:", error)
+    return []
+  }
+
+  return (data || [])
+    .map((row) => ({
+      productId: row.id,
+      productTitle: row.title,
+      totalClicks: row.product_clicks?.[0]?.count ?? 0,
+      estimatedRevenue: null,
+    }))
+    .sort((a, b) => b.totalClicks - a.totalClicks)
 }
