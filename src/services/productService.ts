@@ -17,6 +17,12 @@ interface ProductPayload {
   rating: number | null
 }
 
+export interface CreateProductResult {
+  data: Product | null
+  errorMessage: string | null
+  errorCode: string | null
+}
+
 export const getAllProducts = async (): Promise<Product[]> => {
   const { data, error } = await supabase
     .from("products")
@@ -44,7 +50,7 @@ export const getCategories = async (): Promise<string[]> => {
   return [...new Set((data || []).map((item) => item.category).filter(Boolean))].sort()
 }
 
-export const createProduct = async (payload: ProductPayload): Promise<Product | null> => {
+export const createProduct = async (payload: ProductPayload): Promise<CreateProductResult> => {
   const { data, error } = await supabase
     .from("products")
     .insert([payload])
@@ -53,10 +59,24 @@ export const createProduct = async (payload: ProductPayload): Promise<Product | 
 
   if (error) {
     console.error("Error adding product:", error)
-    return null
+
+    if (error.code === "42501") {
+      return {
+        data: null,
+        errorCode: error.code,
+        errorMessage:
+          "Insert blocked by Supabase RLS policy. Add an INSERT policy for products in Supabase SQL editor.",
+      }
+    }
+
+    return {
+      data: null,
+      errorCode: error.code ?? null,
+      errorMessage: error.message,
+    }
   }
 
-  return data
+  return { data, errorCode: null, errorMessage: null }
 }
 
 export const getProductsByCategory = async (

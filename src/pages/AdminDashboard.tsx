@@ -15,6 +15,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [isErrorMessage, setIsErrorMessage] = useState(false)
   const [useNewCategory, setUseNewCategory] = useState(false)
 
   const [title, setTitle] = useState("")
@@ -66,8 +67,10 @@ const AdminDashboard = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setMessage(null)
+    setIsErrorMessage(false)
 
     if (!categoryValue) {
+      setIsErrorMessage(true)
       setMessage("Please select a category or create a new one.")
       return
     }
@@ -83,8 +86,9 @@ const AdminDashboard = () => {
       rating: rating.trim() ? Number(rating) : null,
     })
 
-    if (!created) {
-      setMessage("Unable to add product. Please verify inputs and try again.")
+    if (!created.data) {
+      setIsErrorMessage(true)
+      setMessage(created.errorMessage || "Unable to add product. Please verify inputs and try again.")
       setSubmitting(false)
       return
     }
@@ -94,6 +98,7 @@ const AdminDashboard = () => {
     setCategories(allCategories)
     setSelectedCategory((prev) => prev || allCategories[0] || "")
 
+    setIsErrorMessage(false)
     setMessage("Product added successfully. Category navigation is now updated.")
     resetForm()
     window.dispatchEvent(new Event("categories-updated"))
@@ -197,7 +202,11 @@ const AdminDashboard = () => {
             <button className="buy-button" type="submit" disabled={submitting}>
               {submitting ? "Adding Product..." : "Add Product"}
             </button>
-            {message && <p className="admin-message">{message}</p>}
+            {message && <p className={`admin-message ${isErrorMessage ? "error" : ""}`}>{message}</p>}
+            <p className="admin-hint">
+              If insert fails with RLS, run this in Supabase SQL editor:
+              <code> create policy "Allow public insert on products" on public.products for insert to anon with check (true); </code>
+            </p>
           </form>
         </div>
 
