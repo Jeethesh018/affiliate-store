@@ -1,9 +1,29 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Link, NavLink } from "react-router-dom"
 import { getCategories } from "../services/productService"
 
-const Header = () => {
+interface HeaderProduct {
+  id: string
+  title: string
+}
+
+interface HeaderProps {
+  products: HeaderProduct[]
+  onSuggestionSelect: (id: string) => void
+  darkMode: boolean
+  onToggleDarkMode: () => void
+}
+
+const Header = ({
+  products,
+  onSuggestionSelect,
+  darkMode,
+  onToggleDarkMode,
+}: HeaderProps) => {
   const [categories, setCategories] = useState<string[]>([])
+  const [query, setQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -12,17 +32,73 @@ const Header = () => {
     }
 
     loadCategories()
-
     window.addEventListener("categories-updated", loadCategories)
     return () => window.removeEventListener("categories-updated", loadCategories)
   }, [])
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query.trim().toLowerCase()), 250)
+    return () => clearTimeout(timer)
+  }, [query])
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener("scroll", onScroll)
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  const suggestions = useMemo(() => {
+    if (!debouncedQuery) return []
+    return products
+      .filter((product) => product.title.toLowerCase().includes(debouncedQuery))
+      .slice(0, 6)
+  }, [debouncedQuery, products])
+
+  const goToFirst = () => {
+    if (suggestions[0]) {
+      onSuggestionSelect(suggestions[0].id)
+      setQuery("")
+    }
+  }
+
   return (
-    <header className="site-header">
+    <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
       <Link to="/" className="brand-wrap">
         <span className="brand-logo">PeakCart</span>
         <span className="brand-tag">Smart Performance Buying</span>
       </Link>
+
+      <div className="header-search-wrap">
+        <input
+          className="header-search"
+          placeholder="Search products"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault()
+              goToFirst()
+            }
+          }}
+        />
+        {suggestions.length > 0 && (
+          <div className="search-suggestions">
+            {suggestions.map((suggestion) => (
+              <button
+                key={suggestion.id}
+                type="button"
+                onClick={() => {
+                  onSuggestionSelect(suggestion.id)
+                  setQuery("")
+                }}
+              >
+                {suggestion.title}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       <nav className="site-nav">
         <div className="category-dropdown">
@@ -42,11 +118,11 @@ const Header = () => {
           </div>
         </div>
 
+        <button type="button" className="nav-pill" onClick={onToggleDarkMode}>
+          {darkMode ? "Light" : "Dark"}
+        </button>
         <NavLink to="/admin" className="nav-pill">
           Admin
-        </NavLink>
-        <NavLink to="/admin/analytics" className="nav-pill nav-pill-dark">
-          Analytics
         </NavLink>
       </nav>
     </header>
