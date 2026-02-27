@@ -14,7 +14,12 @@ import {
 } from "../services/productService"
 import type { Product } from "../types/product"
 
-const ProductDetails = () => {
+interface ProductDetailsProps {
+  comparedMap: Set<string>
+  onToggleCompare: (product: Product) => void
+}
+
+const ProductDetails = ({ comparedMap, onToggleCompare }: ProductDetailsProps) => {
   const { id } = useParams()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
@@ -199,6 +204,42 @@ const ProductDetails = () => {
             </div>
           )}
         </div>
+
+        <div className="related-section">
+          <h2>Related Products</h2>
+          {matchedRelatedProducts.length === 0 ? (
+            <EmptyState
+              title="No related products"
+              description="More products from this category will appear soon."
+            />
+          ) : (
+            <div className="grid">
+              {matchedRelatedProducts.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  product={item}
+                  isCompared={comparedMap.has(item.id)}
+                  onToggleCompare={onToggleCompare}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {matchedRelatedProducts.length > 0 && (
+          <div className="related-section">
+            <h2>Related Picks</h2>
+            <div className="grid">
+              {matchedRelatedProducts.map((item) => (
+                <article key={item.id} className="related-card">
+                  <img src={item.image_url} alt={item.title} className="related-image" />
+                  <h4>{item.title}</h4>
+                  <p>₹{item.price}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </PageLayout>
   )

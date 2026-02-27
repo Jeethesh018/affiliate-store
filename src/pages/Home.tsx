@@ -10,7 +10,7 @@ import {
 } from "../services/productService"
 import type { Product } from "../types/product"
 
-const Home = () => {
+const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
   const [products, setProducts] = useState<Product[]>([])
   const [trendingIds, setTrendingIds] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
