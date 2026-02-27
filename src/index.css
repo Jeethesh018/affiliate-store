@@ -399,6 +399,15 @@ body {
   color: #1d4ed8;
 }
 
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .price {
   font-size: 28px;
   font-weight: 800;
@@ -431,6 +440,57 @@ body {
 
 .related-section {
   margin-top: 24px;
+}
+
+
+.gallery-strip {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.gallery-thumb {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.gallery-thumb img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  display: block;
+}
+
+.gallery-thumb.active {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.offer-compare-section {
+  margin-top: 24px;
+}
+
+.offer-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.offer-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+.offer-table th,
+.offer-table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .comparison-bar {
@@ -749,6 +809,23 @@ body {
 .app-shell.dark .admin-hint code {
   background: #111827;
   color: #e5e7eb;
+}
+
+
+.app-shell.dark .gallery-thumb {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.app-shell.dark .gallery-thumb.active {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.25);
+}
+
+.app-shell.dark .offer-table-wrap,
+.app-shell.dark .offer-table th,
+.app-shell.dark .offer-table td {
+  border-color: #334155;
 }
 
 @keyframes pulse {

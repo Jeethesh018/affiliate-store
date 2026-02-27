@@ -134,8 +134,13 @@ const AdminDashboard = () => {
             </label>
 
             <label>
-              Image URL
-              <input value={imageUrl} onChange={(event) => setImageUrl(event.target.value)} required />
+              Image URL(s)
+              <input
+                value={imageUrl}
+                onChange={(event) => setImageUrl(event.target.value)}
+                placeholder="Single URL or multiple URLs separated by comma"
+                required
+              />
             </label>
 
             <label>

@@ -23,6 +23,31 @@ export interface CreateProductResult {
   errorCode: string | null
 }
 
+const normalizeProductTitle = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/\b(amazon|flipkart|meesho|ajio|myntra)\b/g, "")
+    .replace(/[^a-z0-9 ]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+
+export const inferMarketplace = (affiliateLink: string) => {
+  const link = affiliateLink.toLowerCase()
+  if (link.includes("amazon")) return "Amazon"
+  if (link.includes("flipkart")) return "Flipkart"
+  if (link.includes("meesho")) return "Meesho"
+  if (link.includes("ajio")) return "Ajio"
+  if (link.includes("myntra")) return "Myntra"
+  return "Marketplace"
+}
+
+export const parseProductImages = (imageUrl: string): string[] => {
+  return imageUrl
+    .split(/[,\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
 export const getAllProducts = async (): Promise<Product[]> => {
   const { data, error } = await supabase
     .from("products")
@@ -35,6 +60,18 @@ export const getAllProducts = async (): Promise<Product[]> => {
   }
 
   return data || []
+}
+
+export const getComparableProducts = (baseProduct: Product, allProducts: Product[]) => {
+  const baseNormalized = normalizeProductTitle(baseProduct.title)
+
+  return allProducts
+    .filter((item) => item.id !== baseProduct.id)
+    .filter((item) => item.category === baseProduct.category)
+    .filter((item) => {
+      const normalized = normalizeProductTitle(item.title)
+      return normalized === baseNormalized || normalized.includes(baseNormalized) || baseNormalized.includes(normalized)
+    })
 }
 
 export const getCategories = async (): Promise<string[]> => {

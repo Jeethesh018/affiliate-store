@@ -10,11 +10,6 @@ import {
 } from "../services/productService"
 import type { Product } from "../types/product"
 
-interface HomeProps {
-  comparedMap: Set<string>
-  onToggleCompare: (product: Product) => void
-}
-
 const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
   const [products, setProducts] = useState<Product[]>([])
   const [trendingIds, setTrendingIds] = useState<string[]>([])
@@ -73,13 +68,7 @@ const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
           <h2>🔥 Trending</h2>
           <div className="trending-row">
             {trendingProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                isTrending
-                isCompared={comparedMap.has(product.id)}
-                onToggleCompare={onToggleCompare}
-              />
+              <ProductCard key={product.id} product={product} isTrending />
             ))}
           </div>
         </section>
@@ -93,12 +82,7 @@ const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
       ) : (
         <div className="grid">
           {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              isCompared={comparedMap.has(product.id)}
-              onToggleCompare={onToggleCompare}
-            />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}

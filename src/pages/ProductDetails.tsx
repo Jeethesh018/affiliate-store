@@ -6,7 +6,10 @@ import ProductCard from "../components/ProductCard"
 import { ProductDetailsSkeleton } from "../components/Skeletons"
 import {
   getAllProducts,
+  getComparableProducts,
   getProductById,
+  inferMarketplace,
+  parseProductImages,
   trackProductClick,
 } from "../services/productService"
 import type { Product } from "../types/product"
@@ -21,6 +24,7 @@ const ProductDetails = ({ comparedMap, onToggleCompare }: ProductDetailsProps) =
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -34,6 +38,7 @@ const ProductDetails = ({ comparedMap, onToggleCompare }: ProductDetailsProps) =
       setProduct(productData)
       setRelatedProducts(allProducts)
       setLoading(false)
+      setActiveImageIndex(0)
 
       if (productData) {
         document.title = `${productData.title} | PeakCart`
@@ -55,6 +60,18 @@ const ProductDetails = ({ comparedMap, onToggleCompare }: ProductDetailsProps) =
       .slice(0, 4)
   }, [product, relatedProducts])
 
+  const sameProductOffers = useMemo(() => {
+    if (!product) return []
+    return [product, ...getComparableProducts(product, relatedProducts)]
+      .map((item) => ({ ...item, marketplace: inferMarketplace(item.affiliate_link) }))
+      .sort((a, b) => a.price - b.price)
+  }, [product, relatedProducts])
+
+  const imageList = useMemo(() => {
+    if (!product) return []
+    return parseProductImages(product.image_url)
+  }, [product])
+
   if (loading) return <ProductDetailsSkeleton />
   if (!product) {
     return (
@@ -68,13 +85,28 @@ const ProductDetails = ({ comparedMap, onToggleCompare }: ProductDetailsProps) =
   }
 
   const performanceScore = Math.min(100, Math.round((product.rating ?? 3.8) * 20))
+  const activeImage = imageList[activeImageIndex] || product.image_url
 
   return (
     <PageLayout>
       <div className="details-container">
         <div className="details-grid">
           <div className="image-section">
-            <img src={product.image_url} alt={product.title} className="details-image" loading="lazy" />
+            <img src={activeImage} alt={product.title} className="details-image" loading="lazy" />
+            {imageList.length > 1 && (
+              <div className="gallery-strip">
+                {imageList.map((url, index) => (
+                  <button
+                    key={`${url}-${index}`}
+                    type="button"
+                    className={`gallery-thumb ${activeImageIndex === index ? "active" : ""}`}
+                    onClick={() => setActiveImageIndex(index)}
+                  >
+                    <img src={url} alt={`${product.title} view ${index + 1}`} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="info-section">
@@ -111,6 +143,66 @@ const ProductDetails = ({ comparedMap, onToggleCompare }: ProductDetailsProps) =
               Buy Now
             </button>
           </div>
+        </div>
+
+        <div className="offer-compare-section">
+          <h2>Marketplace Price Comparison</h2>
+          {sameProductOffers.length <= 1 ? (
+            <EmptyState
+              title="No alternate marketplace offers yet"
+              description="Add the same product from Amazon/Flipkart/Meesho in admin to compare prices here."
+            />
+          ) : (
+            <div className="offer-table-wrap">
+              <table className="offer-table">
+                <thead>
+                  <tr>
+                    <th>Marketplace</th>
+                    <th>Price</th>
+                    <th>Rating</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sameProductOffers.map((offer) => (
+                    <tr key={offer.id}>
+                      <td>{offer.marketplace}</td>
+                      <td>₹{offer.price}</td>
+                      <td>{offer.rating ?? "-"}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="compare-button"
+                          onClick={async () => {
+                            await trackProductClick(offer.id)
+                            window.open(offer.affiliate_link, "_blank")
+                          }}
+                        >
+                          View Deal
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="related-section">
+          <h2>Related Products</h2>
+          {matchedRelatedProducts.length === 0 ? (
+            <EmptyState
+              title="No related products"
+              description="More products from this category will appear soon."
+            />
+          ) : (
+            <div className="grid">
+              {matchedRelatedProducts.map((item) => (
+                <ProductCard key={item.id} product={item} />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="related-section">

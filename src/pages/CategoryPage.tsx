@@ -63,12 +63,7 @@ const CategoryPage = ({ comparedMap, onToggleCompare }: CategoryPageProps) => {
       ) : (
         <div className="grid">
           {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              isCompared={comparedMap.has(product.id)}
-              onToggleCompare={onToggleCompare}
-            />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}
