@@ -408,6 +408,15 @@ body {
   color: #1d4ed8;
 }
 
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .price {
   font-size: 28px;
   font-weight: 800;

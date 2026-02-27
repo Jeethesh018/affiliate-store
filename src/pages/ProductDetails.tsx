@@ -205,27 +205,6 @@ const ProductDetails = ({ comparedMap, onToggleCompare }: ProductDetailsProps) =
           )}
         </div>
 
-        <div className="related-section">
-          <h2>Related Products</h2>
-          {matchedRelatedProducts.length === 0 ? (
-            <EmptyState
-              title="No related products"
-              description="More products from this category will appear soon."
-            />
-          ) : (
-            <div className="grid">
-              {matchedRelatedProducts.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  product={item}
-                  isCompared={comparedMap.has(item.id)}
-                  onToggleCompare={onToggleCompare}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
         {matchedRelatedProducts.length > 0 && (
           <div className="related-section">
             <h2>Related Picks</h2>
