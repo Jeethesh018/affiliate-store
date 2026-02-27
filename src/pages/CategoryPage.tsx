@@ -7,7 +7,12 @@ import ProductGridSkeleton from "../components/Skeletons"
 import { getProductsByCategory } from "../services/productService"
 import type { Product } from "../types/product"
 
-const CategoryPage = () => {
+interface CategoryPageProps {
+  comparedMap: Set<string>
+  onToggleCompare: (product: Product) => void
+}
+
+const CategoryPage = ({ comparedMap, onToggleCompare }: CategoryPageProps) => {
   const { categoryName } = useParams()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
