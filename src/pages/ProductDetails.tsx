@@ -14,12 +14,8 @@ import {
 } from "../services/productService"
 import type { Product } from "../types/product"
 
-interface ProductDetailsProps {
-  comparedMap: Set<string>
-  onToggleCompare: (product: Product) => void
-}
 
-const ProductDetails = ({ comparedMap, onToggleCompare }: ProductDetailsProps) => {
+const ProductDetails = () => {
   const { id } = useParams()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)

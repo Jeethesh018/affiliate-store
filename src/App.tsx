@@ -51,20 +51,7 @@ function App() {
         </Route>
       </Routes>
 
-      <ComparisonBar
-        items={comparedProducts}
-        onOpen={() => setIsComparisonOpen(true)}
-        onClear={() => setComparedProducts([])}
-      />
-
-      {isComparisonOpen && (
-        <Suspense fallback={null}>
-          <ComparisonModal
-            products={comparedProducts}
-            onClose={() => setIsComparisonOpen(false)}
-          />
-        </Suspense>
-      )}
+      
     </BrowserRouter>
   )
 }
