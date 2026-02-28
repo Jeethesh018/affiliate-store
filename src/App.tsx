@@ -49,6 +49,7 @@ function App() {
           <Route path="/category/:categoryName" element={<CategoryPage />} />
           <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
           <Route path="/admin/analytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />
+          <Route path="/adminAnalytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />
         </Route>
       </Routes>
 

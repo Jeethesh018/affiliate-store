@@ -68,8 +68,9 @@ body {
 
 .brand-wrap {
   text-decoration: none;
-  display: grid;
-  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  min-height: 54px;
 }
 
 .brand-logo {
@@ -79,9 +80,10 @@ body {
 }
 
 .brand-logo-image {
-  width: 220px;
-  max-width: 100%;
-  height: auto;
+  width: auto;
+  max-width: min(220px, 100%);
+  height: 52px;
+  object-fit: contain;
   display: block;
 }
 
@@ -451,6 +453,15 @@ body {
   color: #1d4ed8;
 }
 
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .price {
   font-size: 28px;
   font-weight: 800;
@@ -675,6 +686,46 @@ body {
   color: #64748b;
 }
 
+
+.admin-auth-wrap {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  padding: 24px 0;
+}
+
+.admin-auth-card {
+  width: min(440px, 100%);
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  background: #fff;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.admin-auth-card h2 {
+  margin: 0;
+}
+
+.admin-auth-card p {
+  margin: 0;
+  color: #64748b;
+}
+
+.admin-auth-card label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.admin-auth-card input {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 10px;
+}
+
 .admin-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -755,7 +806,8 @@ body {
 
 .app-shell.dark .brand-tag,
 .app-shell.dark .page-subtitle,
-.app-shell.dark .site-footer {
+.app-shell.dark .site-footer,
+.app-shell.dark .admin-auth-card p {
   color: #93a2ba;
 }
 
@@ -764,7 +816,8 @@ body {
 .app-shell.dark .nav-pill,
 .app-shell.dark .category-trigger,
 .app-shell.dark .admin-form input,
-.app-shell.dark .admin-form select {
+.app-shell.dark .admin-form select,
+.app-shell.dark .admin-auth-card input {
   background: #0f172a;
   color: #e5e7eb;
   border-color: #334155;
@@ -776,6 +829,7 @@ body {
 .app-shell.dark .details-container,
 .app-shell.dark .admin-card,
 .app-shell.dark .analytics-card,
+.app-shell.dark .admin-auth-card,
 .app-shell.dark .empty-state,
 .app-shell.dark .card {
   background: #0f172a;
@@ -886,6 +940,10 @@ body {
 @media (max-width: 1024px) {
   .site-header {
     grid-template-columns: 1fr;
+  }
+
+  .brand-logo-image {
+    height: 46px;
   }
 
   .site-nav {
@@ -1171,6 +1229,10 @@ body {
 @media (max-width: 700px) {
   .filters-toolbar {
     grid-template-columns: 1fr;
+  }
+
+  .brand-logo-image {
+    height: 40px;
   }
 }
 
