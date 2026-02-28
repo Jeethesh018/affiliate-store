@@ -4,6 +4,7 @@ import Layout from "./components/Layout"
 import { getAllProducts } from "./services/productService"
 import type { Product } from "./types/product"
 import AdminAnalytics from "./pages/AdminAnalytics"
+import AdminGuard from "./components/AdminGuard"
 import AdminDashboard from "./pages/AdminDashboard"
 import CategoryPage from "./pages/CategoryPage"
 import Home from "./pages/Home"
@@ -46,8 +47,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/category/:categoryName" element={<CategoryPage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+          <Route path="/admin/analytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />
         </Route>
       </Routes>
 

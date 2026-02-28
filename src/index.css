@@ -442,6 +442,15 @@ body {
   color: #1d4ed8;
 }
 
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .price {
   font-size: 28px;
   font-weight: 800;
@@ -1162,5 +1171,95 @@ body {
 @media (max-width: 700px) {
   .filters-toolbar {
     grid-template-columns: 1fr;
+  }
+}
+
+.chip {
+  text-decoration: none;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.top-first {
+  margin-bottom: 16px;
+}
+
+.search-stack {
+  position: relative;
+}
+
+.inline-suggestions {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  border: 1px solid #dbe4ef;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
+  padding: 6px;
+  display: grid;
+  gap: 4px;
+}
+
+.inline-suggestions button {
+  border: 0;
+  background: #f8fafc;
+  text-align: left;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.card {
+  min-height: 300px;
+  padding: 10px;
+}
+
+.product-image {
+  height: 140px;
+}
+
+.product-title {
+  font-size: 15px;
+  min-height: 40px;
+}
+
+.product-price {
+  font-size: 18px;
+}
+
+.app-shell.dark .inline-suggestions,
+.app-shell.dark .chip {
+  background: #0f172a;
+  color: #e5e7eb;
+  border-color: #334155;
+}
+
+.app-shell.dark .inline-suggestions button {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .card {
+    min-height: 265px;
+  }
+
+  .product-image {
+    height: 110px;
+  }
+
+  .card-actions .buy-button {
+    font-size: 13px;
+    padding: 8px;
   }
 }

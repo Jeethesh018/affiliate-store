@@ -129,9 +129,6 @@ const Header = ({
         <button type="button" className="nav-pill" onClick={onToggleDarkMode}>
           {darkMode ? "Light" : "Dark"}
         </button>
-        <NavLink to="/admin" className="nav-pill" onClick={() => setMenuOpen(false)}>
-          Admin
-        </NavLink>
       </nav>
     </header>
   )

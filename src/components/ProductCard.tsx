@@ -5,22 +5,12 @@ import type { Product } from "../types/product"
 
 interface Props {
   product: Product
-  isTrending?: boolean
-  isEditorsPick?: boolean
-  isPremium?: boolean
 }
 
-const ProductCard = ({
-  product,
-  isTrending,
-  isEditorsPick,
-  isPremium,
-}: Props) => {
+const ProductCard = ({ product }: Props) => {
   const navigate = useNavigate()
   const primaryImage = parseProductImages(product.image_url)[0] || product.image_url
   const rating = product.rating ?? 4
-  const originalPrice = Math.round(product.price * 1.2)
-  const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100)
 
   const handleQuickBuy = async (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
@@ -30,18 +20,9 @@ const ProductCard = ({
 
   return (
     <article className="card" onClick={() => navigate(`/product/${product.id}`)}>
-      <div className="card-badges">
-        {isTrending && <span className="badge">🔥 Trending</span>}
-        {isEditorsPick && <span className="badge">⭐ Editor&apos;s Pick</span>}
-        {isPremium && <span className="badge">💎 Premium</span>}
-        <span className="discount-badge">-{discount}%</span>
-      </div>
       <img src={primaryImage} alt={product.title} className="product-image" loading="lazy" />
       <h3 className="product-title">{product.title}</h3>
-      <div className="price-stack">
-        <p className="original-price">₹{originalPrice}</p>
-        <p className="product-price">₹{product.price}</p>
-      </div>
+      <p className="product-price">₹{product.price}</p>
       <div className="star-row" aria-label={`Rating ${rating}`}>
         {Array.from({ length: 5 }).map((_, i) => (
           <span key={i} className={i < Math.round(rating) ? "star filled" : "star"}>★</span>
