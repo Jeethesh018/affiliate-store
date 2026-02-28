@@ -78,6 +78,13 @@ body {
   color: #818cf8;
 }
 
+.brand-logo-image {
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 .brand-tag {
   font-size: 13px;
   color: #64748b;
@@ -380,6 +387,15 @@ body {
   border-radius: 12px;
 }
 .card:hover { transform: translateY(-4px); box-shadow: 0 18px 28px rgba(15, 23, 42, 0.12); }
+
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
 
 .detail-category {
   display: inline-block;

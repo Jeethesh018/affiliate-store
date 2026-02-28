@@ -4,6 +4,7 @@ import Loader from "../components/Loader"
 import PageLayout from "../components/PageLayout"
 import {
   createProduct,
+  extractProductDraftFromUrl,
   getAllProducts,
   getCategories,
 } from "../services/productService"
@@ -25,6 +26,8 @@ const AdminDashboard = () => {
   const [rating, setRating] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [newCategory, setNewCategory] = useState("")
+  const [sourceUrl, setSourceUrl] = useState("")
+  const [autofillLoading, setAutofillLoading] = useState(false)
 
   const fetchDashboardData = async () => {
     const [allProducts, allCategories] = await Promise.all([
@@ -62,6 +65,49 @@ const AdminDashboard = () => {
     setRating("")
     setNewCategory("")
     setUseNewCategory(false)
+    setSourceUrl("")
+  }
+
+
+  const handleAutofillFromUrl = async () => {
+    setMessage(null)
+    setIsErrorMessage(false)
+    setAutofillLoading(true)
+
+    const result = await extractProductDraftFromUrl(sourceUrl)
+
+    if (!result.data) {
+      setIsErrorMessage(true)
+      setMessage(result.errorMessage || "Unable to auto-fill this URL.")
+      setAutofillLoading(false)
+      return
+    }
+
+    if (result.data.title) setTitle(result.data.title)
+    if (result.data.price) setPrice(String(result.data.price))
+    if (result.data.image_url) setImageUrl(result.data.image_url)
+    if (result.data.affiliate_link) setAffiliateLink(result.data.affiliate_link)
+
+    if (result.data.category) {
+      const exists = categories.includes(result.data.category)
+      if (exists) {
+        setUseNewCategory(false)
+        setSelectedCategory(result.data.category)
+      } else {
+        setUseNewCategory(true)
+        setNewCategory(result.data.category)
+      }
+    }
+
+    if (result.errorMessage) {
+      setIsErrorMessage(true)
+      setMessage(result.errorMessage)
+    } else {
+      setIsErrorMessage(false)
+      setMessage("Auto-filled product details from link. Verify and click Add Product.")
+    }
+
+    setAutofillLoading(false)
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -116,6 +162,18 @@ const AdminDashboard = () => {
         <div className="admin-card">
           <h3>Add New Product</h3>
           <form className="admin-form" onSubmit={handleSubmit}>
+            <label>
+              Product Link (Amazon / Flipkart / etc.)
+              <input
+                value={sourceUrl}
+                onChange={(event) => setSourceUrl(event.target.value)}
+                placeholder="Paste product URL for auto-fill"
+              />
+            </label>
+            <button type="button" className="compare-button" onClick={handleAutofillFromUrl} disabled={autofillLoading}>
+              {autofillLoading ? "Reading link..." : "Auto Fill from Link"}
+            </button>
+
             <label>
               Product Title
               <input value={title} onChange={(event) => setTitle(event.target.value)} required />

@@ -66,8 +66,7 @@ const Header = ({
   return (
     <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
       <Link to="/" className="brand-wrap">
-        <span className="brand-logo">Peak-Kart</span>
-        <span className="brand-tag">Premium Smart Deals</span>
+        <img src="/peakkart-logo.svg" alt="PeakKart" className="brand-logo-image" />
       </Link>
 
       <div className="header-search-wrap">
