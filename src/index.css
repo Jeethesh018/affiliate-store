@@ -363,8 +363,19 @@ body {
 .details-container {
   padding: 18px;
 }
+.category-menu a, .category-empty { display: block; padding: 8px; border-radius: 8px; text-decoration: none; color: inherit; }
+.category-menu a:hover { background: #eef2ff; }
+.category-dropdown:hover .category-menu, .category-dropdown:focus-within .category-menu { display: block; }
 
-.details-grid {
+.page-shell { max-width: 1200px; margin: 0 auto; }
+.page-head { margin-bottom: 20px; }
+.page-title { margin: 0; font-size: 30px; }
+.page-subtitle { color: #64748b; }
+
+.search-row { margin-bottom: 18px; }
+.search-input { border: 1px solid #d1d5db; border-radius: 12px; padding: 10px 12px; width: 100%; max-width: 380px; }
+
+.grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
@@ -376,6 +387,70 @@ body {
   max-height: 420px;
   object-fit: contain;
   border-radius: 12px;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 18px 28px rgba(15, 23, 42, 0.12); }
+
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
 }
 
 .detail-category {
