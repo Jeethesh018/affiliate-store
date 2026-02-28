@@ -51,6 +51,8 @@ function App() {
           <Route path="/admin/analytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />
         </Route>
       </Routes>
+
+      
     </BrowserRouter>
   )
 }
