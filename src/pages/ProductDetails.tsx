@@ -14,7 +14,6 @@ import {
 } from "../services/productService"
 import type { Product } from "../types/product"
 
-
 const ProductDetails = () => {
   const { id } = useParams()
   const [product, setProduct] = useState<Product | null>(null)

@@ -417,6 +417,15 @@ body {
   color: #1d4ed8;
 }
 
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .price {
   font-size: 28px;
   font-weight: 800;
@@ -886,5 +895,256 @@ body {
 
   .product-price {
     font-size: 18px;
+  }
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #fff7ed, #ffffff);
+  border: 1px solid #fed7aa;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 18px;
+}
+
+.hero-section h2 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.hero-section p {
+  margin: 0 0 14px;
+  color: #475569;
+}
+
+.hero-cta {
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f97316;
+  color: #fff;
+  font-weight: 600;
+}
+
+.filters-toolbar {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(2, minmax(140px, 180px)) minmax(170px, 240px);
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.filters-toolbar select,
+.filters-toolbar input[type="search"] {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+
+.price-slider-wrap {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.featured-carousel,
+.top-categories {
+  margin-bottom: 20px;
+}
+
+.featured-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 4px 0 10px;
+}
+
+.featured-row .card {
+  flex: 0 0 240px;
+  min-width: 240px;
+}
+
+.discount-badge {
+  background: #ffedd5;
+  color: #c2410c;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.price-stack {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.original-price {
+  margin: 0;
+  color: #94a3b8;
+  text-decoration: line-through;
+  font-size: 13px;
+}
+
+.star-row {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.star {
+  color: #cbd5e1;
+}
+
+.star.filled {
+  color: #f97316;
+}
+
+.pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination-row button {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.pagination-row button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.telegram-cta-section {
+  max-width: 1200px;
+  margin: 12px auto 8px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #fdba74;
+  background: #fff7ed;
+  text-align: center;
+}
+
+.telegram-cta-section h3 {
+  margin: 0 0 6px;
+}
+
+.telegram-cta-section p {
+  margin: 0 0 10px;
+  color: #475569;
+}
+
+.telegram-cta-section a {
+  display: inline-block;
+  text-decoration: none;
+  background: #f97316;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+}
+
+.telegram-float {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 95;
+  text-decoration: none;
+  background: #f97316;
+  color: #fff;
+  border-radius: 999px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-top-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 66px;
+  z-index: 95;
+  border: 0;
+  border-radius: 999px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  background: #111827;
+  color: #fff;
+}
+
+.menu-toggle {
+  display: none;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  padding: 8px 10px;
+}
+
+.app-shell.dark .hero-section {
+  background: #111827;
+  border-color: #334155;
+}
+
+.app-shell.dark .hero-section p,
+.app-shell.dark .price-slider-wrap,
+.app-shell.dark .telegram-cta-section p {
+  color: #9fb0ca;
+}
+
+.app-shell.dark .filters-toolbar select,
+.app-shell.dark .filters-toolbar input[type="search"],
+.app-shell.dark .menu-toggle,
+.app-shell.dark .pagination-row button {
+  background: #0f172a;
+  color: #e5e7eb;
+  border-color: #334155;
+}
+
+.app-shell.dark .discount-badge {
+  background: #7c2d12;
+  color: #ffedd5;
+}
+
+.app-shell.dark .original-price {
+  color: #64748b;
+}
+
+.app-shell.dark .telegram-cta-section {
+  background: #1f2937;
+  border-color: #9a3412;
+}
+
+@media (max-width: 1024px) {
+  .filters-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .menu-toggle {
+    display: inline-block;
+    justify-self: end;
+  }
+
+  .site-nav {
+    display: none;
+    width: 100%;
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .site-nav.open {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 700px) {
+  .filters-toolbar {
+    grid-template-columns: 1fr;
   }
 }

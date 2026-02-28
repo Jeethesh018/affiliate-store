@@ -24,6 +24,7 @@ const Header = ({
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -65,8 +66,8 @@ const Header = ({
   return (
     <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
       <Link to="/" className="brand-wrap">
-        <span className="brand-logo">PeakCart</span>
-        <span className="brand-tag">Smart Performance Buying</span>
+        <span className="brand-logo">Peak-Kart</span>
+        <span className="brand-tag">Premium Smart Deals</span>
       </Link>
 
       <div className="header-search-wrap">
@@ -100,7 +101,15 @@ const Header = ({
         )}
       </div>
 
-      <nav className="site-nav">
+      <button
+        type="button"
+        className="menu-toggle"
+        onClick={() => setMenuOpen((prev) => !prev)}
+      >
+        ☰
+      </button>
+
+      <nav className={`site-nav ${menuOpen ? "open" : ""}`}>
         <div className="category-dropdown">
           <button className="category-trigger" type="button">
             Categories ▾
@@ -110,7 +119,7 @@ const Header = ({
               <span className="category-empty">No categories yet</span>
             ) : (
               categories.map((category) => (
-                <NavLink key={category} to={`/category/${category}`}>
+                <NavLink key={category} to={`/category/${category}`} onClick={() => setMenuOpen(false)}>
                   {category}
                 </NavLink>
               ))
@@ -121,7 +130,7 @@ const Header = ({
         <button type="button" className="nav-pill" onClick={onToggleDarkMode}>
           {darkMode ? "Light" : "Dark"}
         </button>
-        <NavLink to="/admin" className="nav-pill">
+        <NavLink to="/admin" className="nav-pill" onClick={() => setMenuOpen(false)}>
           Admin
         </NavLink>
       </nav>

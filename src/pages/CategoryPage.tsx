@@ -7,8 +7,6 @@ import ProductGridSkeleton from "../components/Skeletons"
 import { getProductsByCategory } from "../services/productService"
 import type { Product } from "../types/product"
 
-
-
 const CategoryPage = () => {
   const { categoryName } = useParams()
   const [products, setProducts] = useState<Product[]>([])
