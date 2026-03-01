@@ -17,7 +17,6 @@ const Header = ({ products }: HeaderProps) => {
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
   const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -90,30 +89,17 @@ const Header = ({ products }: HeaderProps) => {
         )}
       </div>
 
-      <button
-        type="button"
-        className="menu-toggle"
-        onClick={() => setMenuOpen((prev) => !prev)}
-      >
-        ☰
-      </button>
-
-      <nav className={`site-nav ${menuOpen ? "open" : ""}`}>
-        <div className="category-dropdown">
-          <button className="category-trigger" type="button">
-            Categories ▾
-          </button>
-          <div className="category-menu">
-            {categories.length === 0 ? (
-              <span className="category-empty">No categories yet</span>
-            ) : (
-              categories.map((category) => (
-                <Link key={category} to={`/?category=${encodeURIComponent(category)}`} onClick={() => setMenuOpen(false)}>
-                  {category}
-                </Link>
-              ))
-            )}
-          </div>
+      <nav className="site-nav always-visible">
+        <div className="category-list" aria-label="Categories">
+          {categories.length === 0 ? (
+            <span className="category-empty">No categories yet</span>
+          ) : (
+            categories.map((category) => (
+              <Link key={category} to={`/?category=${encodeURIComponent(category)}`}>
+                {category}
+              </Link>
+            ))
+          )}
         </div>
       </nav>
     </header>

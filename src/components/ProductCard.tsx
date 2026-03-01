@@ -19,7 +19,7 @@ const ProductCard = ({ product }: Props) => {
     <article className="card">
       <img src={primaryImage} alt={product.title} className="product-image" loading="lazy" />
       <h3 className="product-title">{product.title}</h3>
-      <p className="product-price">₹{product.price}</p>
+      <p className="product-price">₹{Number(product.price).toLocaleString("en-IN")}</p>
       <div className="card-actions">
         <button className="buy-button" onClick={handleQuickBuy}>
           Buy Now
