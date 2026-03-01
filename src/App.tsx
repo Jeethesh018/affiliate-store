@@ -10,6 +10,12 @@ import Home from "./pages/Home"
 
 function App() {
   const [allProducts, setAllProducts] = useState<Product[]>([])
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window === "undefined") return false
+    const stored = localStorage.getItem("theme")
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    return stored ? stored === "dark" : prefersDark
+  })
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -19,10 +25,23 @@ function App() {
     loadProducts()
   }, [])
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode)
+    localStorage.setItem("theme", darkMode ? "dark" : "light")
+  }, [darkMode])
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout products={allProducts} />}>
+        <Route
+          element={
+            <Layout
+              products={allProducts}
+              darkMode={darkMode}
+              onToggleDarkMode={() => setDarkMode((prev) => !prev)}
+            />
+          }
+        >
           <Route path="/" element={<Home />} />
           <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
           <Route path="/admin/analytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />

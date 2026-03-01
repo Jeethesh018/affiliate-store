@@ -5,9 +5,11 @@ import type { Product } from "../types/product"
 
 interface LayoutProps {
   products: Product[]
+  darkMode: boolean
+  onToggleDarkMode: () => void
 }
 
-const Layout = ({ products }: LayoutProps) => {
+const Layout = ({ products, darkMode, onToggleDarkMode }: LayoutProps) => {
   const location = useLocation()
   const [showScrollTop, setShowScrollTop] = useState(false)
 
@@ -28,13 +30,17 @@ const Layout = ({ products }: LayoutProps) => {
   )
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${darkMode ? "dark" : ""}`}>
       <Header products={searchable} />
       <main key={`${location.pathname}${location.search}`} className="main-content route-fade show">
         <Outlet />
       </main>
 
       <footer className="site-footer">© {new Date().getFullYear()} Peak-Kart. All rights reserved.</footer>
+
+      <button type="button" className="theme-float" aria-label="Toggle day-night theme" onClick={onToggleDarkMode}>
+        {darkMode ? "☀️" : "🌙"}
+      </button>
 
       {showScrollTop && (
         <button
