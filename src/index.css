@@ -471,6 +471,15 @@ body {
   color: #1d4ed8;
 }
 
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .price {
   font-size: 28px;
   font-weight: 800;
@@ -1392,4 +1401,36 @@ body,
 
 .product-title {
   min-height: 44px;
+}
+
+
+.admin-logout-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.theme-float {
+  position: fixed;
+  right: 16px;
+  bottom: 14px;
+  z-index: 95;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+}
+
+.scroll-top-btn {
+  bottom: 62px;
+}
+
+.app-shell.dark .theme-float {
+  background: #0f172a;
+  border-color: #334155;
 }

@@ -9,7 +9,6 @@ import type { Product } from "../types/product"
 
 const PRODUCTS_PER_PAGE = 10
 
-
 const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
   const [products, setProducts] = useState<Product[]>([])
   const [trendingIds, setTrendingIds] = useState<string[]>([])
