@@ -65,7 +65,7 @@ const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
   return (
     <PageLayout
       title="Peak-Kart Deals"
-      
+      subtitle="Single-page deal list: product image, name, price and direct Buy Now."
     >
       <section className="top-categories top-first" id="categories">
         <h3>Categories</h3>
