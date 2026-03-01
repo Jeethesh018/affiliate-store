@@ -7,11 +7,10 @@ import ProductGridSkeleton from "../components/Skeletons"
 import { getAllProducts } from "../services/productService"
 import type { Product } from "../types/product"
 
-const PRODUCTS_PER_PAGE = 10
+const PRODUCTS_PER_PAGE = 8
 
-const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
+const Home = () => {
   const [products, setProducts] = useState<Product[]>([])
-  const [trendingIds, setTrendingIds] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
