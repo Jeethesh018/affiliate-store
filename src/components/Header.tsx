@@ -13,21 +13,11 @@ interface HeaderProps {
 }
 
 const Header = ({ products }: HeaderProps) => {
-  const [categories, setCategories] = useState<string[]>([])
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
   const [scrolled, setScrolled] = useState(false)
 
-  useEffect(() => {
-    const loadCategories = async () => {
-      const allCategories = await getCategories()
-      setCategories(allCategories)
-    }
 
-    loadCategories()
-    window.addEventListener("categories-updated", loadCategories)
-    return () => window.removeEventListener("categories-updated", loadCategories)
-  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query.trim().toLowerCase()), 250)
@@ -89,19 +79,7 @@ const Header = ({ products }: HeaderProps) => {
         )}
       </div>
 
-      {/* <nav className="site-nav always-visible">
-        <div className="category-list" aria-label="Categories">
-          {categories.length === 0 ? (
-            <span className="category-empty">No categories yet</span>
-          ) : (
-            categories.map((category) => (
-              <Link key={category} to={`/?category=${encodeURIComponent(category)}`}>
-                {category}
-              </Link>
-            ))
-          )}
-        </div>
-      </nav> */}
+  
     </header>
   )
 }
