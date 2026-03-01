@@ -1,17 +1,33 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Layout from "./components/Layout"
+import { getAllProducts } from "./services/productService"
+import type { Product } from "./types/product"
+import AdminAnalytics from "./pages/AdminAnalytics"
+import AdminGuard from "./components/AdminGuard"
+import AdminDashboard from "./pages/AdminDashboard"
 import Home from "./pages/Home"
-import ProductDetails from "./pages/ProductDetails"
-import CategoryPage from "./pages/CategoryPage"
-import Header from "./components/Header"
 
 function App() {
+  const [allProducts, setAllProducts] = useState<Product[]>([])
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const products = await getAllProducts()
+      setAllProducts(products)
+    }
+    loadProducts()
+  }, [])
+
   return (
     <BrowserRouter>
-    <Header/>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/category/:categoryName" element={<CategoryPage />} />
+        <Route element={<Layout products={allProducts} />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+          <Route path="/admin/analytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />
+          <Route path="/adminAnalytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )
