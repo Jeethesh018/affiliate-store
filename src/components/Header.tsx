@@ -1,25 +1,18 @@
 import { useEffect, useMemo, useState } from "react"
-import { Link, NavLink } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { getCategories } from "../services/productService"
 
 interface HeaderProduct {
   id: string
   title: string
+  affiliate_link: string
 }
 
 interface HeaderProps {
   products: HeaderProduct[]
-  onSuggestionSelect: (id: string) => void
-  darkMode: boolean
-  onToggleDarkMode: () => void
 }
 
-const Header = ({
-  products,
-  onSuggestionSelect,
-  darkMode,
-  onToggleDarkMode,
-}: HeaderProps) => {
+const Header = ({ products }: HeaderProps) => {
   const [categories, setCategories] = useState<string[]>([])
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
@@ -56,11 +49,11 @@ const Header = ({
       .slice(0, 6)
   }, [debouncedQuery, products])
 
-  const goToFirst = () => {
-    if (suggestions[0]) {
-      onSuggestionSelect(suggestions[0].id)
-      setQuery("")
-    }
+  const openDeal = (id: string) => {
+    const product = products.find((item) => item.id === id)
+    if (!product) return
+    window.open(product.affiliate_link, "_blank", "noopener,noreferrer")
+    setQuery("")
   }
 
   return (
@@ -76,9 +69,9 @@ const Header = ({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Enter") {
+            if (event.key === "Enter" && suggestions[0]) {
               event.preventDefault()
-              goToFirst()
+              openDeal(suggestions[0].id)
             }
           }}
         />
@@ -88,10 +81,7 @@ const Header = ({
               <button
                 key={suggestion.id}
                 type="button"
-                onClick={() => {
-                  onSuggestionSelect(suggestion.id)
-                  setQuery("")
-                }}
+                onClick={() => openDeal(suggestion.id)}
               >
                 {suggestion.title}
               </button>
@@ -118,17 +108,13 @@ const Header = ({
               <span className="category-empty">No categories yet</span>
             ) : (
               categories.map((category) => (
-                <NavLink key={category} to={`/category/${category}`} onClick={() => setMenuOpen(false)}>
+                <Link key={category} to={`/?category=${encodeURIComponent(category)}`} onClick={() => setMenuOpen(false)}>
                   {category}
-                </NavLink>
+                </Link>
               ))
             )}
           </div>
         </div>
-
-        <button type="button" className="nav-pill" onClick={onToggleDarkMode}>
-          {darkMode ? "Light" : "Dark"}
-        </button>
       </nav>
     </header>
   )

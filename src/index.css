@@ -462,6 +462,15 @@ body {
   color: #1d4ed8;
 }
 
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .price {
   font-size: 28px;
   font-weight: 800;
@@ -1324,4 +1333,63 @@ body {
     font-size: 13px;
     padding: 8px;
   }
+}
+
+/* Simplified single-page storefront palette (logo-aligned indigo/violet) */
+:root {
+  --brand: #4f46e5;
+  --brand-dark: #4338ca;
+  --brand-soft: #eef2ff;
+}
+
+body,
+.app-shell {
+  background: #f5f7ff;
+}
+
+.site-header {
+  border-bottom: 1px solid #dbe4ff;
+}
+
+.buy-button {
+  background: var(--brand);
+}
+
+.buy-button:hover {
+  background: var(--brand-dark);
+}
+
+.hero-section,
+.telegram-cta-section,
+.telegram-float {
+  display: none;
+}
+
+.chip {
+  border: 1px solid #c7d2fe;
+  background: #ffffff;
+  color: #312e81;
+  cursor: pointer;
+}
+
+.chip.active {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand-dark);
+}
+
+.filters-toolbar {
+  grid-template-columns: 1fr;
+}
+
+.card {
+  border: 1px solid #dbe4ff;
+}
+
+.card-actions {
+  margin-top: 10px;
+}
+
+.product-title {
+  min-height: 44px;
 }

@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react"
-import { Link } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import EmptyState from "../components/EmptyState"
 import PageLayout from "../components/PageLayout"
 import ProductCard from "../components/ProductCard"
 import ProductGridSkeleton from "../components/Skeletons"
 import { getAllProducts } from "../services/productService"
 import type { Product } from "../types/product"
+
+const PRODUCTS_PER_PAGE = 10
 
 const PRODUCTS_PER_PAGE = 8
 
@@ -17,19 +19,12 @@ const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [sortBy, setSortBy] = useState("newest")
   const [currentPage, setCurrentPage] = useState(1)
+  const [params, setParams] = useSearchParams()
+  const selectedCategory = params.get("category") ?? "All"
 
   useEffect(() => {
-    document.title = "Peak-Kart | Premium Affiliate Deals"
-    const meta = document.querySelector('meta[name="description"]')
-    if (meta) {
-      meta.setAttribute(
-        "content",
-        "Peak-Kart helps you discover premium, high-value affiliate deals across smart tech, fitness, accessories and lifestyle essentials."
-      )
-    }
+    document.title = "Peak-Kart | Deals"
 
     const fetchProducts = async () => {
       const productData = await getAllProducts()
@@ -39,6 +34,7 @@ const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
 
     fetchProducts()
   }, [])
+
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query.trim().toLowerCase()), 300)
@@ -53,18 +49,14 @@ const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
   }, [debouncedQuery, products])
 
   const filteredProducts = useMemo(() => {
-    const searched = products.filter((product) => {
-      const matchesSearch = debouncedQuery ? product.title.toLowerCase().includes(debouncedQuery) : true
-      const matchesCategory = selectedCategory === "All" ? true : product.category === selectedCategory
-      return matchesSearch && matchesCategory
-    })
-
-    return [...searched].sort((a, b) => {
-      const left = new Date(a.created_at).getTime()
-      const right = new Date(b.created_at).getTime()
-      return sortBy === "newest" ? right - left : left - right
-    })
-  }, [products, debouncedQuery, selectedCategory, sortBy])
+    return products
+      .filter((product) => {
+        const matchesSearch = debouncedQuery ? product.title.toLowerCase().includes(debouncedQuery) : true
+        const matchesCategory = selectedCategory === "All" ? true : product.category === selectedCategory
+        return matchesSearch && matchesCategory
+      })
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+  }, [products, debouncedQuery, selectedCategory])
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE))
   const pagedProducts = useMemo(() => {
@@ -76,24 +68,28 @@ const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
 
   return (
     <PageLayout
-      title="Premium Deals for Smart Buyers"
-      subtitle="Curated offers across electronics, accessories and lifestyle categories."
+      title="Peak-Kart Deals"
+      subtitle="Single-page deal list: product image, name, price and direct Buy Now."
     >
-      <section className="hero-section">
-        <div>
-          <h2>Deals at Their Peak</h2>
-          <p>Compare smarter and shop faster with trusted affiliate offers.</p>
-          <Link className="hero-cta" to="/category/Electronics">Explore Deals</Link>
-        </div>
-      </section>
-
-      <section className="top-categories top-first">
-        <h3>Browse Categories</h3>
+      <section className="top-categories top-first" id="categories">
+        <h3>Categories</h3>
         <div className="chip-wrap">
-          {categories.slice(1).map((category) => (
-            <Link key={category} className="chip" to={`/category/${category}`}>
+          {categories.map((category) => (
+            <button
+              key={category}
+              type="button"
+              className={`chip ${selectedCategory === category ? "active" : ""}`}
+              onClick={() => {
+                setCurrentPage(1)
+                if (category === "All") {
+                  setParams({})
+                  return
+                }
+                setParams({ category })
+              }}
+            >
               {category}
-            </Link>
+            </button>
           ))}
         </div>
       </section>
@@ -127,35 +123,12 @@ const Home = ({ comparedMap, onToggleCompare }: HomeProps) => {
             </div>
           )}
         </div>
-
-        <select
-          value={selectedCategory}
-          onChange={(event) => {
-            setSelectedCategory(event.target.value)
-            setCurrentPage(1)
-          }}
-        >
-          {categories.map((category) => (
-            <option key={category} value={category}>{category}</option>
-          ))}
-        </select>
-
-        <select
-          value={sortBy}
-          onChange={(event) => {
-            setSortBy(event.target.value)
-            setCurrentPage(1)
-          }}
-        >
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-        </select>
       </section>
 
       {pagedProducts.length === 0 ? (
         <EmptyState
           title="No products found"
-          description="Try different search/category filters to discover better deals."
+          description="Try a different search term or category."
         />
       ) : (
         <div className="grid">
