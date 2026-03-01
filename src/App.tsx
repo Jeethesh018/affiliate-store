@@ -29,6 +29,8 @@ function App() {
           <Route path="/adminAnalytics" element={<AdminGuard><AdminAnalytics /></AdminGuard>} />
         </Route>
       </Routes>
+
+      
     </BrowserRouter>
   )
 }
