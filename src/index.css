@@ -507,6 +507,15 @@ body {
   color: #1d4ed8;
 }
 
+.detail-category {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .price {
   font-size: 28px;
   font-weight: 800;
@@ -1482,4 +1491,24 @@ body,
   .scroll-top-btn {
     bottom: 60px;
   }
+}
+
+
+.section-block {
+  margin-bottom: 22px;
+}
+
+.category-filter-wrap {
+  position: relative;
+  max-width: 420px;
+}
+
+.section-note {
+  margin: 6px 0 12px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.app-shell.dark .section-note {
+  color: #9fb0ca;
 }

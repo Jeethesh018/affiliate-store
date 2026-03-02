@@ -7,14 +7,18 @@ import ProductGridSkeleton from "../components/Skeletons"
 import { getAllProducts } from "../services/productService"
 import type { Product } from "../types/product"
 
-const PRODUCTS_PER_PAGE = 8
+const TOP_DEALS_PER_PAGE = 8
+const CATEGORY_PRODUCTS_PER_PAGE = 8
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
+  const [topDealsPage, setTopDealsPage] = useState(1)
+  const [categoryPage, setCategoryPage] = useState(1)
+  const [categoryQuery, setCategoryQuery] = useState("")
+  const [categoryFocused, setCategoryFocused] = useState(false)
   const [params, setParams] = useSearchParams()
   const selectedCategory = params.get("category") ?? "All"
 
@@ -30,61 +34,139 @@ const Home = () => {
     fetchProducts()
   }, [])
 
-
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query.trim().toLowerCase()), 300)
     return () => clearTimeout(timer)
   }, [query])
 
+
+  const sortedProducts = useMemo(
+    () => [...products].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
+    [products]
+  )
+
+  const todayTopDeals = useMemo(() => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth()
+    const day = now.getDate()
+
+    return sortedProducts.filter((product) => {
+      const created = new Date(product.created_at)
+      return (
+        created.getFullYear() == year &&
+        created.getMonth() == month &&
+        created.getDate() == day
+      )
+    })
+  }, [sortedProducts])
+
   const categories = useMemo(() => ["All", ...new Set(products.map((p) => p.category))], [products])
 
-  const suggestions = useMemo(() => {
+  const visibleCategoryQuery = categoryFocused ? categoryQuery : selectedCategory === "All" ? "" : selectedCategory
+
+  const categorySuggestions = useMemo(() => {
+    if (!visibleCategoryQuery.trim()) return categories
+    const needle = visibleCategoryQuery.trim().toLowerCase()
+    return categories.filter((category) => category.toLowerCase().includes(needle))
+  }, [visibleCategoryQuery, categories])
+
+  const productSuggestions = useMemo(() => {
     if (!debouncedQuery) return []
     return products.filter((p) => p.title.toLowerCase().includes(debouncedQuery)).slice(0, 6)
   }, [debouncedQuery, products])
 
-  const filteredProducts = useMemo(() => {
-    return products
-      .filter((product) => {
-        const matchesSearch = debouncedQuery ? product.title.toLowerCase().includes(debouncedQuery) : true
-        const matchesCategory = selectedCategory === "All" ? true : product.category === selectedCategory
-        return matchesSearch && matchesCategory
-      })
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-  }, [products, debouncedQuery, selectedCategory])
+  const filteredCategoryProducts = useMemo(() => {
+    return sortedProducts.filter((product) => {
+      const matchesSearch = debouncedQuery ? product.title.toLowerCase().includes(debouncedQuery) : true
+      const matchesCategory = selectedCategory === "All" ? true : product.category === selectedCategory
+      return matchesSearch && matchesCategory
+    })
+  }, [sortedProducts, debouncedQuery, selectedCategory])
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE))
-  const pagedProducts = useMemo(() => {
-    const start = (currentPage - 1) * PRODUCTS_PER_PAGE
-    return filteredProducts.slice(start, start + PRODUCTS_PER_PAGE)
-  }, [filteredProducts, currentPage])
+  const topDealsTotalPages = Math.max(1, Math.ceil(todayTopDeals.length / TOP_DEALS_PER_PAGE))
+  const pagedTopDeals = useMemo(() => {
+    const start = (topDealsPage - 1) * TOP_DEALS_PER_PAGE
+    return todayTopDeals.slice(start, start + TOP_DEALS_PER_PAGE)
+  }, [todayTopDeals, topDealsPage])
+
+  const categoryTotalPages = Math.max(1, Math.ceil(filteredCategoryProducts.length / CATEGORY_PRODUCTS_PER_PAGE))
+  const pagedCategoryProducts = useMemo(() => {
+    const start = (categoryPage - 1) * CATEGORY_PRODUCTS_PER_PAGE
+    return filteredCategoryProducts.slice(start, start + CATEGORY_PRODUCTS_PER_PAGE)
+  }, [filteredCategoryProducts, categoryPage])
 
   if (loading) return <ProductGridSkeleton />
 
   return (
     <PageLayout
       title="Peak-Kart Deals"
+      subtitle="Single-page deal list: product image, name, price and direct Buy Now."
     >
-      <section className="top-categories top-first" id="categories">
+      <section className="section-block">
+        <h3>Today Top Deals</h3>
+        <p className="section-note">Only products added today are shown here. This resets automatically after midnight.</p>
+        {pagedTopDeals.length === 0 ? (
+          <EmptyState title="No new deals today" description="Add products today to feature them in Today Top Deals." />
+        ) : (
+          <div className="grid">
+            {pagedTopDeals.map((product) => (
+              <ProductCard key={`top-${product.id}`} product={product} />
+            ))}
+          </div>
+        )}
+        <div className="pagination-row">
+          <button type="button" disabled={topDealsPage === 1} onClick={() => setTopDealsPage((prev) => prev - 1)}>
+            Previous
+          </button>
+          <span>Page {topDealsPage} / {topDealsTotalPages}</span>
+          <button
+            type="button"
+            disabled={topDealsPage === topDealsTotalPages}
+            onClick={() => setTopDealsPage((prev) => prev + 1)}
+          >
+            Next
+          </button>
+        </div>
+      </section>
+
+      <section className="section-block top-categories top-first" id="categories">
         <h3>Categories</h3>
-        <div className="chip-wrap">
-          {categories.map((category) => (
-            <button
-              key={category}
-              type="button"
-              className={`chip ${selectedCategory === category ? "active" : ""}`}
-              onClick={() => {
-                setCurrentPage(1)
-                if (category === "All") {
-                  setParams({})
-                  return
-                }
-                setParams({ category })
-              }}
-            >
-              {category}
-            </button>
-          ))}
+        <div className="category-filter-wrap">
+          <input
+            type="search"
+            value={visibleCategoryQuery}
+            className="search-input"
+            placeholder="Search category"
+            onFocus={() => {
+              setCategoryFocused(true)
+              setCategoryQuery(selectedCategory === "All" ? "" : selectedCategory)
+            }}
+            onBlur={() => setTimeout(() => setCategoryFocused(false), 120)}
+            onChange={(event) => setCategoryQuery(event.target.value)}
+          />
+          {categoryFocused && categorySuggestions.length > 0 && (
+            <div className="inline-suggestions">
+              {categorySuggestions.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => {
+                    setCategoryPage(1)
+                    setCategoryQuery(category === "All" ? "" : category)
+                    setCategoryFocused(false)
+                    if (category === "All") {
+                      setParams({})
+                      return
+                    }
+                    setParams({ category })
+                  }}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -95,14 +177,14 @@ const Home = () => {
             value={query}
             onChange={(event) => {
               setQuery(event.target.value)
-              setCurrentPage(1)
+              setCategoryPage(1)
             }}
             placeholder="Search deals"
             className="search-input"
           />
-          {suggestions.length > 0 && (
+          {productSuggestions.length > 0 && (
             <div className="inline-suggestions">
-              {suggestions.map((item) => (
+              {productSuggestions.map((item) => (
                 <button
                   type="button"
                   key={item.id}
@@ -119,25 +201,29 @@ const Home = () => {
         </div>
       </section>
 
-      {pagedProducts.length === 0 ? (
+      {pagedCategoryProducts.length === 0 ? (
         <EmptyState
           title="No products found"
           description="Try a different search term or category."
         />
       ) : (
         <div className="grid">
-          {pagedProducts.map((product) => (
+          {pagedCategoryProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}
 
       <div className="pagination-row">
-        <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>
+        <button type="button" disabled={categoryPage === 1} onClick={() => setCategoryPage((prev) => prev - 1)}>
           Previous
         </button>
-        <span>Page {currentPage} / {totalPages}</span>
-        <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => prev + 1)}>
+        <span>Page {categoryPage} / {categoryTotalPages}</span>
+        <button
+          type="button"
+          disabled={categoryPage === categoryTotalPages}
+          onClick={() => setCategoryPage((prev) => prev + 1)}
+        >
           Next
         </button>
       </div>
