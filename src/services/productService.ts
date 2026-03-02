@@ -1,6 +1,117 @@
 import { supabase } from "../lib/supabase"
 import type { Product } from "../types/product"
 
+export interface ProductClickAnalytics {
+  productId: string
+  productTitle: string
+  totalClicks: number
+  estimatedRevenue: number | null
+}
+
+interface ProductPayload {
+  title: string
+  price: number
+  image_url: string
+  category: string
+  affiliate_link: string
+  rating: number | null
+}
+
+export interface CreateProductResult {
+  data: Product | null
+  errorMessage: string | null
+  errorCode: string | null
+}
+
+const normalizeProductTitle = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/\b(amazon|flipkart|meesho|ajio|myntra)\b/g, "")
+    .replace(/[^a-z0-9 ]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+
+export const inferMarketplace = (affiliateLink: string) => {
+  const link = affiliateLink.toLowerCase()
+  if (link.includes("amazon")) return "Amazon"
+  if (link.includes("flipkart")) return "Flipkart"
+  if (link.includes("meesho")) return "Meesho"
+  if (link.includes("ajio")) return "Ajio"
+  if (link.includes("myntra")) return "Myntra"
+  return "Marketplace"
+}
+
+export const parseProductImages = (imageUrl: string): string[] => {
+  return imageUrl
+    .split(/[,\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+
+export interface ProductDraftFromUrl {
+  title?: string
+  price?: number
+  image_url?: string
+  affiliate_link?: string
+  category?: string
+}
+
+const inferCategoryFromTitle = (title: string) => {
+  const normalized = title.toLowerCase()
+  if (/(earbud|headphone|audio|speaker|watch|phone|laptop|tablet|camera)/.test(normalized)) return "Electronics"
+  if (/(bag|cover|case|strap|bottle|wallet|stand|holder)/.test(normalized)) return "Accessories"
+  if (/(fitness|gym|protein|yoga|running|smart)/.test(normalized)) return "Fitness"
+  return "Gadgets"
+}
+
+const extractPriceFromText = (text: string) => {
+  const match = text.match(/(?:₹|rs\.?|inr)\s?([0-9,]{2,})/i)
+  if (!match) return undefined
+  const n = Number(match[1].replace(/,/g, ""))
+  return Number.isFinite(n) ? n : undefined
+}
+
+export const extractProductDraftFromUrl = async (url: string): Promise<{ data: ProductDraftFromUrl | null; errorMessage: string | null }> => {
+  const cleanUrl = url.trim()
+  if (!cleanUrl) {
+    return { data: null, errorMessage: "Please paste a product URL." }
+  }
+
+  try {
+    const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(cleanUrl)}&meta=true&screenshot=false`)
+    const result = await response.json()
+    const payload = result?.data
+
+    if (!payload?.title) {
+      return {
+        data: {
+          affiliate_link: cleanUrl,
+        },
+        errorMessage: "Could not auto-read product data from this URL. Fill details manually.",
+      }
+    }
+
+    const title = String(payload.title)
+    const description = String(payload.description || "")
+    const price = extractPriceFromText(`${title} ${description}`)
+    const image = payload.image?.url || payload.logo?.url
+
+    return {
+      data: {
+        title,
+        price,
+        image_url: image,
+        affiliate_link: cleanUrl,
+        category: inferCategoryFromTitle(title),
+      },
+      errorMessage: null,
+    }
+  } catch (error) {
+    console.error("Error extracting product from URL:", error)
+    return { data: null, errorMessage: "Auto-fill failed. You can still add product manually." }
+  }
+}
 
 export const getAllProducts = async (): Promise<Product[]> => {
   const { data, error } = await supabase
@@ -14,6 +125,60 @@ export const getAllProducts = async (): Promise<Product[]> => {
   }
 
   return data || []
+}
+
+export const getComparableProducts = (baseProduct: Product, allProducts: Product[]) => {
+  const baseNormalized = normalizeProductTitle(baseProduct.title)
+
+  return allProducts
+    .filter((item) => item.id !== baseProduct.id)
+    .filter((item) => item.category === baseProduct.category)
+    .filter((item) => {
+      const normalized = normalizeProductTitle(item.title)
+      return normalized === baseNormalized || normalized.includes(baseNormalized) || baseNormalized.includes(normalized)
+    })
+}
+
+export const getCategories = async (): Promise<string[]> => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("category")
+
+  if (error) {
+    console.error("Error fetching categories:", error)
+    return []
+  }
+
+  return [...new Set((data || []).map((item) => item.category).filter(Boolean))].sort()
+}
+
+export const createProduct = async (payload: ProductPayload): Promise<CreateProductResult> => {
+  const { data, error } = await supabase
+    .from("products")
+    .insert([payload])
+    .select("*")
+    .single()
+
+  if (error) {
+    console.error("Error adding product:", error)
+
+    if (error.code === "42501") {
+      return {
+        data: null,
+        errorCode: error.code,
+        errorMessage:
+          "Insert blocked by Supabase RLS policy. Add an INSERT policy for products in Supabase SQL editor.",
+      }
+    }
+
+    return {
+      data: null,
+      errorCode: error.code ?? null,
+      errorMessage: error.message,
+    }
+  }
+
+  return { data, errorCode: null, errorMessage: null }
 }
 
 export const getProductsByCategory = async (
@@ -33,6 +198,21 @@ export const getProductsByCategory = async (
   return data || []
 }
 
+export const getProductById = async (productId: string): Promise<Product | null> => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("id", productId)
+    .single()
+
+  if (error) {
+    console.error("Error fetching product details:", error)
+    return null
+  }
+
+  return data
+}
+
 export const trackProductClick = async (productId: string) => {
   const { error } = await supabase
     .from("product_clicks")
@@ -46,4 +226,24 @@ export const trackProductClick = async (productId: string) => {
   if (error) {
     console.error("Error tracking click:", error)
   }
+}
+
+export const getProductClickAnalytics = async (): Promise<ProductClickAnalytics[]> => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id, title, product_clicks(count)")
+
+  if (error) {
+    console.error("Error fetching product analytics:", error)
+    return []
+  }
+
+  return (data || [])
+    .map((row) => ({
+      productId: row.id,
+      productTitle: row.title,
+      totalClicks: row.product_clicks?.[0]?.count ?? 0,
+      estimatedRevenue: null,
+    }))
+    .sort((a, b) => b.totalClicks - a.totalClicks)
 }
