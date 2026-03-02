@@ -199,6 +199,21 @@ const ProductDetails = () => {
             </div>
           )}
         </div>
+
+        {matchedRelatedProducts.length > 0 && (
+          <div className="related-section">
+            <h2>Related Picks</h2>
+            <div className="grid">
+              {matchedRelatedProducts.map((item) => (
+                <article key={item.id} className="related-card">
+                  <img src={item.image_url} alt={item.title} className="related-image" />
+                  <h4>{item.title}</h4>
+                  <p>₹{item.price}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </PageLayout>
   )
