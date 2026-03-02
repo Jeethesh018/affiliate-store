@@ -88,8 +88,7 @@ const Header = ({ products }: HeaderProps) => {
           </div>
         )}
       </div>
-
-      <nav className="site-nav always-visible">
+  <nav className="site-nav always-visible">
         <div className="category-list" aria-label="Categories">
           {categories.length === 0 ? (
             <span className="category-empty">No categories yet</span>
