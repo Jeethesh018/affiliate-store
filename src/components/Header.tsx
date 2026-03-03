@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import { getCategories } from "../services/productService"
 
 interface HeaderProduct {
   id: string
@@ -13,21 +12,10 @@ interface HeaderProps {
 }
 
 const Header = ({ products }: HeaderProps) => {
-  const [categories, setCategories] = useState<string[]>([])
+
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
   const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const loadCategories = async () => {
-      const allCategories = await getCategories()
-      setCategories(allCategories)
-    }
-
-    loadCategories()
-    window.addEventListener("categories-updated", loadCategories)
-    return () => window.removeEventListener("categories-updated", loadCategories)
-  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query.trim().toLowerCase()), 250)
