@@ -89,19 +89,7 @@ const Header = ({ products }: HeaderProps) => {
         )}
       </div>
 
-      <nav className="site-nav always-visible">
-        <div className="category-list" aria-label="Categories">
-          {categories.length === 0 ? (
-            <span className="category-empty">No categories yet</span>
-          ) : (
-            categories.map((category) => (
-              <Link key={category} to={`/?category=${encodeURIComponent(category)}`}>
-                {category}
-              </Link>
-            ))
-          )}
-        </div>
-      </nav>
+  
     </header>
   )
 }

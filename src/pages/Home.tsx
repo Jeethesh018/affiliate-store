@@ -101,11 +101,11 @@ const Home = () => {
   return (
     <PageLayout
       title="Peak-Kart Deals"
-      subtitle="Single-page deal list: product image, name, price and direct Buy Now."
+      
     >
       <section className="section-block">
         <h3>Today Top Deals</h3>
-        <p className="section-note">Only products added today are shown here. This resets automatically after midnight.</p>
+     
         {pagedTopDeals.length === 0 ? (
           <EmptyState title="No new deals today" description="Add products today to feature them in Today Top Deals." />
         ) : (
